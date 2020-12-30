@@ -360,6 +360,16 @@ typedef enum {
 #endif /* LWESP_CFG_IPV6 || __DOXYGEN__ */
 } lwesp_conn_type_t;
 
+/**
+ * \ingroup         LWESP_SYSFLASH
+ * \brief           List of possible SYSFLASH operations
+ */
+typedef enum {
+    LWESP_SYSFLASH_OP_ERASE = 0,                /*!< Operation is Erase */
+    LWESP_SYSFLASH_OP_WRITE,                    /*!< Operation is Write */
+    LWESP_SYSFLASH_OP_READ,                     /*!< Operation is Read */
+} lwesp_sysflash_op_t;
+
 /* Forward declarations */
 struct lwesp_evt;
 struct lwesp_conn;
