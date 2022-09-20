@@ -36,6 +36,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include "lwesp/lwesp_types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,41 +47,6 @@ extern "C" {
  * \defgroup        LWESP_DEBUG Debug support
  * \brief           Debug support module to track library flow
  * \{
- */
-
-#define LWESP_DBG_ON                  0x80      /*!< Indicates debug is enabled */
-#define LWESP_DBG_OFF                 0         /*!< Indicates debug is disabled */
-
-/**
- * \anchor          LWESP_DBG_LVL
- * \name            Debug levels
- * \brief           List of debug levels
- * \{
- */
-
-#define LWESP_DBG_LVL_ALL             0x00      /*!< Print all messages of all types */
-#define LWESP_DBG_LVL_WARNING         0x01      /*!< Print warning and upper messages */
-#define LWESP_DBG_LVL_DANGER          0x02      /*!< Print danger errors */
-#define LWESP_DBG_LVL_SEVERE          0x03      /*!< Print severe problems affecting program flow */
-#define LWESP_DBG_LVL_MASK            0x03      /*!< Mask for getting debug level */
-
-/**
- * \}
- */
-
-/**
- * \anchor          LWESP_DBG_TYPE
- * \name            Debug types
- * \brief           List of debug types
- * \{
- */
-
-#define LWESP_DBG_TYPE_TRACE          0x40      /*!< Debug trace messages for program flow */
-#define LWESP_DBG_TYPE_STATE          0x20      /*!< Debug state messages (such as state machines) */
-#define LWESP_DBG_TYPE_ALL            (LWESP_DBG_TYPE_TRACE | LWESP_DBG_TYPE_STATE) /*!< All debug types */
-
-/**
- * \}
  */
 
 #if LWESP_CFG_DBG && !defined(LWESP_CFG_DBG_OUT)
@@ -94,10 +60,12 @@ extern "C" {
  * \param[in]       fmt: Formatted string for debug
  * \param[in]       ...: Variable parameters for formatted string
  */
-#define LWESP_DEBUGF(c, fmt, ...)         do {\
-        if (((c) & (LWESP_DBG_ON)) && ((c) & (LWESP_CFG_DBG_TYPES_ON)) && ((c) & LWESP_DBG_LVL_MASK) >= (LWESP_CFG_DBG_LVL_MIN)) {    \
-            LWESP_CFG_DBG_OUT(fmt, ## __VA_ARGS__);   \
-        }                                       \
+#define LWESP_DEBUGF(c, fmt, ...)                                                                                      \
+    do {                                                                                                               \
+        if (((c) & (LWESP_DBG_ON)) && ((c) & (LWESP_CFG_DBG_TYPES_ON))                                                 \
+            && ((c)&LWESP_DBG_LVL_MASK) >= (LWESP_CFG_DBG_LVL_MIN)) {                                                  \
+            LWESP_CFG_DBG_OUT(fmt, ##__VA_ARGS__);                                                                     \
+        }                                                                                                              \
     } while (0)
 
 /**
@@ -107,14 +75,15 @@ extern "C" {
  * \param[in]       fmt: Formatted string for debug
  * \param[in]       ...: Variable parameters for formatted string
  */
-#define LWESP_DEBUGW(c, cond, fmt, ...)   do {\
-        if (cond) {                             \
-            LWESP_DEBUGF(c, fmt, ## __VA_ARGS__); \
-        }                                       \
+#define LWESP_DEBUGW(c, cond, fmt, ...)                                                                                \
+    do {                                                                                                               \
+        if (cond) {                                                                                                    \
+            LWESP_DEBUGF(c, fmt, ##__VA_ARGS__);                                                                       \
+        }                                                                                                              \
     } while (0)
 #else
 #undef LWESP_CFG_DBG
-#define LWESP_CFG_DBG                 LWESP_DBG_OFF
+#define LWESP_CFG_DBG LWESP_DBG_OFF
 #define LWESP_DEBUGF(c, fmt, ...)
 #define LWESP_DEBUGW(c, cond, fmt, ...)
 #endif /* (LWESP_CFG_DBG && defined(LWESP_CFG_DBG_OUT)) || __DOXYGEN__ */

@@ -34,40 +34,42 @@
 #ifndef LWESP_HDR_PARSER_H
 #define LWESP_HDR_PARSER_H
 
+#include "lwesp/lwesp_types.h"
+#include "lwesp/lwesp_private.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-#include "lwesp/lwesp.h"
+int32_t lwespi_parse_number(const char** str);
+uint32_t lwespi_parse_hexnumber(const char** str);
+uint8_t lwespi_parse_string(const char** src, char* dst, size_t dst_len, uint8_t trim);
+uint8_t lwespi_parse_ip(const char** src, lwesp_ip_t* ip);
+lwesp_port_t lwespi_parse_port(const char** str);
+uint8_t lwespi_parse_mac(const char** src, lwesp_mac_t* mac);
 
-int32_t     lwespi_parse_number(const char** str);
-uint8_t     lwespi_parse_string(const char** src, char* dst, size_t dst_len, uint8_t trim);
-uint8_t     lwespi_parse_ip(const char** src, lwesp_ip_t* ip);
-uint8_t     lwespi_parse_mac(const char** src, lwesp_mac_t* mac);
+lwespr_t lwespi_parse_cipstatus_cipstate(const char* str);
+lwesp_conn_p lwespi_parse_ipd(const char* str);
+lwespr_t lwespi_parse_ciprecvlen(const char* str);
 
-lwespr_t    lwespi_parse_cipstatus_cipstate(const char* str);
-lwespr_t    lwespi_parse_ipd(const char* str);
-lwespr_t    lwespi_parse_ciprecvdata(const char* str);
-lwespr_t    lwespi_parse_ciprecvlen(const char* str);
+uint8_t lwespi_parse_cwlap(const char* str, lwesp_msg_t* msg);
+uint8_t lwespi_parse_cwjap(const char* str, lwesp_msg_t* msg);
+uint8_t lwespi_parse_cwlif(const char* str, lwesp_msg_t* msg);
+uint8_t lwespi_parse_cipdomain(const char* src, lwesp_msg_t* msg);
+uint8_t lwespi_parse_cipsntptime(const char* str, lwesp_msg_t* msg);
+uint8_t lwespi_parse_ping_time(const char* str, lwesp_msg_t* msg);
+uint8_t lwespi_parse_hostname(const char* str, lwesp_msg_t* msg);
+uint8_t lwespi_parse_link_conn(const char* str);
 
-uint8_t     lwespi_parse_cwlap(const char* str, lwesp_msg_t* msg);
-uint8_t     lwespi_parse_cwjap(const char* str, lwesp_msg_t* msg);
-uint8_t     lwespi_parse_cwlif(const char* str, lwesp_msg_t* msg);
-uint8_t     lwespi_parse_cipdomain(const char* src, lwesp_msg_t* msg);
-uint8_t     lwespi_parse_cipsntptime(const char* str, lwesp_msg_t* msg);
-uint8_t     lwespi_parse_ping_time(const char* str, lwesp_msg_t* msg);
-uint8_t     lwespi_parse_hostname(const char* str, lwesp_msg_t* msg);
-uint8_t     lwespi_parse_link_conn(const char* str);
+uint8_t lwespi_parse_at_sdk_version(const char* str, lwesp_sw_version_t* version_out);
 
-uint8_t     lwespi_parse_at_sdk_version(const char* str, lwesp_sw_version_t* version_out);
+uint8_t lwespi_parse_ap_conn_disconn_sta(const char* str, uint8_t is_conn);
+uint8_t lwespi_parse_ap_ip_sta(const char* str);
+uint8_t lwespi_parse_cwsap(const char* str, lwesp_msg_t* msg);
 
-uint8_t     lwespi_parse_ap_conn_disconn_sta(const char* str, uint8_t is_conn);
-uint8_t     lwespi_parse_ap_ip_sta(const char* str);
-uint8_t     lwespi_parse_cwsap(const char* str, lwesp_msg_t* msg);
+uint8_t lwespi_parse_cwdhcp(const char* str);
 
-uint8_t     lwespi_parse_cwdhcp(const char* str);
-
-uint8_t     lwespi_parse_webserver(const char* str);
+uint8_t lwespi_parse_webserver(const char* str);
 
 #ifdef __cplusplus
 }

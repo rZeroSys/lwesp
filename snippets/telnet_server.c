@@ -9,6 +9,7 @@
 #include <stdarg.h> /* Required for printf */
 #include "lwesp/lwesp.h"
 #include "lwesp/lwesp_cli.h"
+#include "lwesp/lwesp_netconn.h"
 #include "cli/cli.h"
 #include "cli/cli_input.h"
 
@@ -31,6 +32,9 @@ telnet_commands[] = {
  */
 static void
 telnet_cli_exit(cli_printf cliprintf, int argc, char** argv) {
+    LWESP_UNUSED(cliprintf);
+    LWESP_UNUSED(argc);
+    LWESP_UNUSED(argv);
     close_conn = true;
 }
 
@@ -94,11 +98,11 @@ telnet_client_config(lwesp_netconn_p nc) {
  * \ref             true when command sequence is active, else false
  */
 static bool
-telnet_command_sequence_check(char ch) {
+telnet_command_sequence_check(unsigned char ch) {
     static uint32_t telnet_command_sequence = 0;
     bool command_sequence_found = false;
 
-    if (!telnet_command_sequence && ch == 0xff) {
+    if (!telnet_command_sequence && ch == 0xFF) {
         command_sequence_found = true;
         telnet_command_sequence = 1;
         printf("AIC   ");
@@ -245,6 +249,8 @@ telnet_server_thread(void const* arg) {
     lwespr_t res;
     lwesp_pbuf_p pbuf;
     lwesp_netconn_p server;
+
+    LWESP_UNUSED(arg);
 
     /*
      * First create a new instance of netconn

@@ -33,7 +33,6 @@
  */
 #include "lwesp/lwesp_private.h"
 #include "lwesp/lwesp_ping.h"
-#include "lwesp/lwesp_mem.h"
 
 #if LWESP_CFG_PING || __DOXYGEN__
 
@@ -47,11 +46,11 @@
  * \return          \ref lwespOK on success, member of \ref lwespr_t enumeration otherwise
  */
 lwespr_t
-lwesp_ping(const char* host, uint32_t* time,
-           const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking) {
+lwesp_ping(const char* host, uint32_t* time, const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg,
+           const uint32_t blocking) {
     LWESP_MSG_VAR_DEFINE(msg);
 
-    LWESP_ASSERT("host != NULL", host != NULL);
+    LWESP_ASSERT(host != NULL);
 
     LWESP_MSG_VAR_ALLOC(msg, blocking);
     LWESP_MSG_VAR_SET_EVT(msg, evt_fn, evt_arg);

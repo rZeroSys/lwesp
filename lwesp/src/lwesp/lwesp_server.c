@@ -32,7 +32,7 @@
  * Version:         v1.1.2-dev
  */
 #include "lwesp/lwesp_private.h"
-#include "lwesp/lwesp_mem.h"
+#include "lwesp/lwesp_server.h"
 
 /**
  * \brief           Enables or disables server mode
@@ -52,13 +52,14 @@ lwesp_set_server(uint8_t en, lwesp_port_t port, uint16_t max_conn, uint16_t time
                  const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking) {
     LWESP_MSG_VAR_DEFINE(msg);
 
-    LWESP_ASSERT("port > 0", port > 0);
+    LWESP_ASSERT(port > 0);
 
     LWESP_MSG_VAR_ALLOC(msg, blocking);
     LWESP_MSG_VAR_SET_EVT(msg, evt_fn, evt_arg);
     LWESP_MSG_VAR_REF(msg).cmd_def = LWESP_CMD_TCPIP_CIPSERVER;
     if (en) {
-        LWESP_MSG_VAR_REF(msg).cmd = LWESP_CMD_TCPIP_CIPSERVERMAXCONN;  /* First command is to set maximal number of connections for server */
+        LWESP_MSG_VAR_REF(msg).cmd =
+            LWESP_CMD_TCPIP_CIPSERVERMAXCONN; /* First command is to set maximal number of connections for server */
     }
     LWESP_MSG_VAR_REF(msg).msg.tcpip_server.en = en;
     LWESP_MSG_VAR_REF(msg).msg.tcpip_server.port = port;

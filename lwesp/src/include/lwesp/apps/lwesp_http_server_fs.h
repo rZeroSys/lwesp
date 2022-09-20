@@ -35,6 +35,7 @@
 #define LWESP_HDR_HTTP_SERVER_FS_H
 
 #include "lwesp/apps/lwesp_http_server.h"
+#include "lwesp/lwesp.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,9 +48,9 @@ extern "C" {
  * \{
  */
 
-uint8_t     http_fs_open(http_fs_file_t* file, const char* path);
-uint32_t    http_fs_read(http_fs_file_t* file, void* buff, size_t btr);
-uint8_t     http_fs_close(http_fs_file_t* file);
+uint8_t http_fs_open(http_fs_file_t* file, const char* path);
+uint32_t http_fs_read(http_fs_file_t* file, void* buff, size_t btr);
+uint8_t http_fs_close(http_fs_file_t* file);
 
 /**
  * \}

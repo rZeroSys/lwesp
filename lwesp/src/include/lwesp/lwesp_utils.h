@@ -34,7 +34,7 @@
 #ifndef LWESP_HDR_UTILS_H
 #define LWESP_HDR_UTILS_H
 
-#include "lwesp/lwesp.h"
+#include "lwesp/lwesp_types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,14 +50,15 @@ extern "C" {
 /**
  * \brief           Assert an input parameter if in valid range
  * \note            Since this is a macro, it may only be used on a functions where return status is of type \ref lwespr_t enumeration
- * \param[in]       msg: message to print to debug if test fails
  * \param[in]       c: Condition to test
  */
-#define LWESP_ASSERT(msg, c)   do {   \
-        if (!(c)) {                     \
-            LWESP_DEBUGF(LWESP_CFG_DBG_ASSERT, "Wrong parameters on file %s and line %d: %s\r\n", __FILE__, (int)__LINE__, msg);\
-            return lwespPARERR;           \
-        }                               \
+#define LWESP_ASSERT(c)                                                                                                \
+    do {                                                                                                               \
+        if (!(c)) {                                                                                                    \
+            LWESP_DEBUGF(LWESP_CFG_DBG_ASSERT, "Assert failed in file %s on line %d: %s\r\n", __FILE__, (int)__LINE__, \
+                         #c);                                                                                          \
+            return lwespERRPAR;                                                                                        \
+        }                                                                                                              \
     } while (0)
 
 /**
@@ -66,7 +67,7 @@ extern "C" {
  * \return          Input value aligned to specific number of bytes
  * \hideinitializer
  */
-#define LWESP_MEM_ALIGN(x)                    ((x + (LWESP_CFG_MEM_ALIGNMENT - 1)) & ~(LWESP_CFG_MEM_ALIGNMENT - 1))
+#define LWESP_MEM_ALIGN(x)                ((x + (LWESP_CFG_MEM_ALIGNMENT - 1)) & ~(LWESP_CFG_MEM_ALIGNMENT - 1))
 
 /**
  * \brief           Get minimal value between `x` and `y` inputs
@@ -75,7 +76,7 @@ extern "C" {
  * \return          Minimal value between `x` and `y` parameters
  * \hideinitializer
  */
-#define LWESP_MIN(x, y)                       ((x) < (y) ? (x) : (y))
+#define LWESP_MIN(x, y)                   ((x) < (y) ? (x) : (y))
 
 /**
  * \brief           Get maximal value between `x` and `y` inputs
@@ -84,7 +85,7 @@ extern "C" {
  * \return          Maximal value between `x` and `y` parameters
  * \hideinitializer
  */
-#define LWESP_MAX(x, y)                       ((x) > (y) ? (x) : (y))
+#define LWESP_MAX(x, y)                   ((x) > (y) ? (x) : (y))
 
 /**
  * \brief           Get size of statically declared array
@@ -92,7 +93,7 @@ extern "C" {
  * \return          Number of array elements
  * \hideinitializer
  */
-#define LWESP_ARRAYSIZE(x)                    (sizeof(x) / sizeof((x)[0]))
+#define LWESP_ARRAYSIZE(x)                (sizeof(x) / sizeof((x)[0]))
 
 /**
  * \brief           Unused argument in a function call
@@ -101,56 +102,56 @@ extern "C" {
  * \param[in]       x: Variable which is not used
  * \hideinitializer
  */
-#define LWESP_UNUSED(x)                       ((void)(x))
+#define LWESP_UNUSED(x)                   ((void)(x))
 
 /**
  * \brief           Get input value casted to `unsigned 32-bit` value
  * \param[in]       x: Input value
  * \hideinitializer
  */
-#define LWESP_U32(x)                          ((uint32_t)(x))
+#define LWESP_U32(x)                      ((uint32_t)(x))
 
 /**
  * \brief           Get input value casted to `unsigned 16-bit` value
  * \param[in]       x: Input value
  * \hideinitializer
  */
-#define LWESP_U16(x)                          ((uint16_t)(x))
+#define LWESP_U16(x)                      ((uint16_t)(x))
 
 /**
  * \brief           Get input value casted to `unsigned 8-bit` value
  * \param[in]       x: Input value
  * \hideinitializer
  */
-#define LWESP_U8(x)                           ((uint8_t)(x))
+#define LWESP_U8(x)                       ((uint8_t)(x))
 
 /**
  * \brief           Get input value casted to `signed 32-bit` value
  * \param[in]       x: Input value
  * \hideinitializer
  */
-#define LWESP_I32(x)                          ((int32_t)(x))
+#define LWESP_I32(x)                      ((int32_t)(x))
 
 /**
  * \brief           Get input value casted to `signed 16-bit` value
  * \param[in]       x: Input value
  * \hideinitializer
  */
-#define LWESP_I16(x)                          ((int16_t)(x))
+#define LWESP_I16(x)                      ((int16_t)(x))
 
 /**
  * \brief           Get input value casted to `signed 8-bit` value
  * \param[in]       x: Input value
  * \hideinitializer
  */
-#define LWESP_I8(x)                           ((int8_t)(x))
+#define LWESP_I8(x)                       ((int8_t)(x))
 
 /**
  * \brief           Get input value casted to `size_t` value
  * \param[in]       x: Input value
  * \hideinitializer
  */
-#define LWESP_SZ(x)                           ((size_t)(x))
+#define LWESP_SZ(x)                       ((size_t)(x))
 
 /**
  * \brief           Convert `unsigned 32-bit` number to string
@@ -159,7 +160,7 @@ extern "C" {
  * \return          Pointer to output variable
  * \hideinitializer
  */
-#define lwesp_u32_to_str(num, out)            lwesp_u32_to_gen_str(LWESP_U32(num), (out), 0, 0)
+#define lwesp_u32_to_str(num, out)        lwesp_u32_to_gen_str(LWESP_U32(num), (out), 0, 0)
 
 /**
  * \brief           Convert `unsigned 32-bit` number to HEX string
@@ -170,7 +171,7 @@ extern "C" {
  * \return          Pointer to output variable
  * \hideinitializer
  */
-#define lwesp_u32_to_hex_str(num, out, w)     lwesp_u32_to_gen_str(LWESP_U32(num), (out), 1, (w))
+#define lwesp_u32_to_hex_str(num, out, w) lwesp_u32_to_gen_str(LWESP_U32(num), (out), 1, (w))
 
 /**
  * \brief           Convert `signed 32-bit` number to string
@@ -179,7 +180,7 @@ extern "C" {
  * \return          Pointer to output variable
  * \hideinitializer
  */
-#define lwesp_i32_to_str(num, out)            lwesp_i32_to_gen_str(LWESP_I32(num), (out))
+#define lwesp_i32_to_str(num, out)        lwesp_i32_to_gen_str(LWESP_I32(num), (out))
 
 /**
  * \brief           Convert `unsigned 16-bit` number to string
@@ -188,7 +189,7 @@ extern "C" {
  * \return          Pointer to output variable
  * \hideinitializer
  */
-#define lwesp_u16_to_str(num, out)            lwesp_u32_to_gen_str(LWESP_U32(LWESP_U16(num)), (out), 0, 0)
+#define lwesp_u16_to_str(num, out)        lwesp_u32_to_gen_str(LWESP_U32(LWESP_U16(num)), (out), 0, 0)
 
 /**
  * \brief           Convert `unsigned 16-bit` number to HEX string
@@ -199,7 +200,7 @@ extern "C" {
  * \return          Pointer to output variable
  * \hideinitializer
  */
-#define lwesp_u16_to_hex_str(num, out, w)     lwesp_u32_to_gen_str(LWESP_U32(LWESP_U16(num)), (out), 1, (w))
+#define lwesp_u16_to_hex_str(num, out, w) lwesp_u32_to_gen_str(LWESP_U32(LWESP_U16(num)), (out), 1, (w))
 
 /**
  * \brief           Convert `signed 16-bit` number to string
@@ -208,7 +209,7 @@ extern "C" {
  * \return          Pointer to output variable
  * \hideinitializer
  */
-#define lwesp_i16_to_str(num, out)            lwesp_i32_to_gen_str(LWESP_I32(LWESP_I16(num)), (out))
+#define lwesp_i16_to_str(num, out)        lwesp_i32_to_gen_str(LWESP_I32(LWESP_I16(num)), (out))
 
 /**
  * \brief           Convert `unsigned 8-bit` number to string
@@ -217,7 +218,7 @@ extern "C" {
  * \return          Pointer to output variable
  * \hideinitializer
  */
-#define lwesp_u8_to_str(num, out)             lwesp_u32_to_gen_str(LWESP_U32(LWESP_U8(num)), (out), 0, 0)
+#define lwesp_u8_to_str(num, out)         lwesp_u32_to_gen_str(LWESP_U32(LWESP_U8(num)), (out), 0, 0)
 
 /**
  * \brief           Convert `unsigned 16-bit` number to HEX string
@@ -228,7 +229,7 @@ extern "C" {
  * \return          Pointer to output variable
  * \hideinitializer
  */
-#define lwesp_u8_to_hex_str(num, out, w)      lwesp_u32_to_gen_str(LWESP_U32(LWESP_U8(num)), (out), 1, (w))
+#define lwesp_u8_to_hex_str(num, out, w)  lwesp_u32_to_gen_str(LWESP_U32(LWESP_U8(num)), (out), 1, (w))
 
 /**
  * \brief           Convert `signed 8-bit` number to string
@@ -237,10 +238,10 @@ extern "C" {
  * \return          Pointer to output variable
  * \hideinitializer
  */
-#define lwesp_i8_to_str(num, out)             lwesp_i32_to_gen_str(LWESP_I32(LWESP_I8(num)), (out))
+#define lwesp_i8_to_str(num, out)         lwesp_i32_to_gen_str(LWESP_I32(LWESP_I8(num)), (out))
 
-char*       lwesp_u32_to_gen_str(uint32_t num, char* out, uint8_t is_hex, uint8_t padding);
-char*       lwesp_i32_to_gen_str(int32_t num, char* out);
+char* lwesp_u32_to_gen_str(uint32_t num, char* out, uint8_t is_hex, uint8_t padding);
+char* lwesp_i32_to_gen_str(int32_t num, char* out);
 
 /**
  * \}

@@ -34,7 +34,7 @@
 #ifndef LWESP_HDR_HOSTNAME_H
 #define LWESP_HDR_HOSTNAME_H
 
-#include "lwesp/lwesp.h"
+#include "lwesp/lwesp_types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,8 +47,10 @@ extern "C" {
  * \{
  */
 
-lwespr_t    lwesp_hostname_set(const char* hostname, const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking);
-lwespr_t    lwesp_hostname_get(char* hostname, size_t size, const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking);
+lwespr_t lwesp_hostname_set(const char* hostname, const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg,
+                            const uint32_t blocking);
+lwespr_t lwesp_hostname_get(char* hostname, size_t size, const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg,
+                            const uint32_t blocking);
 
 /**
  * \}

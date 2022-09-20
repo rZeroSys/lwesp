@@ -33,7 +33,6 @@
  */
 #include "lwesp/lwesp_private.h"
 #include "lwesp/lwesp_sta.h"
-#include "lwesp/lwesp_mem.h"
 
 #if LWESP_CFG_MODE_STATION || __DOXYGEN__
 
@@ -71,11 +70,11 @@ lwesp_sta_quit(const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uin
  * \return          \ref lwespOK on success, member of \ref lwespr_t enumeration otherwise
  */
 lwespr_t
-lwesp_sta_join(const char* name, const char* pass, const lwesp_mac_t* mac,
-               const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking) {
+lwesp_sta_join(const char* name, const char* pass, const lwesp_mac_t* mac, const lwesp_api_cmd_evt_fn evt_fn,
+               void* const evt_arg, const uint32_t blocking) {
     LWESP_MSG_VAR_DEFINE(msg);
 
-    LWESP_ASSERT("name != NULL", name != NULL);
+    LWESP_ASSERT(name != NULL);
 
     LWESP_MSG_VAR_ALLOC(msg, blocking);
     LWESP_MSG_VAR_SET_EVT(msg, evt_fn, evt_arg);
@@ -98,8 +97,7 @@ lwesp_sta_join(const char* name, const char* pass, const lwesp_mac_t* mac,
  * \return          \ref lwespOK on success, member of \ref lwespr_t enumeration otherwise
  */
 lwespr_t
-lwesp_sta_autojoin(uint8_t en,
-                   const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking) {
+lwesp_sta_autojoin(uint8_t en, const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking) {
     LWESP_MSG_VAR_DEFINE(msg);
 
     LWESP_MSG_VAR_ALLOC(msg, blocking);
@@ -122,12 +120,12 @@ lwesp_sta_autojoin(uint8_t en,
  * \return          \ref lwespOK on success, member of \ref lwespr_t enumeration otherwise
  */
 lwespr_t
-lwesp_sta_reconnect_set_config(uint16_t interval, uint16_t rep_cnt,
-                               const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking) {
+lwesp_sta_reconnect_set_config(uint16_t interval, uint16_t rep_cnt, const lwesp_api_cmd_evt_fn evt_fn,
+                               void* const evt_arg, const uint32_t blocking) {
     LWESP_MSG_VAR_DEFINE(msg);
 
-    LWESP_ASSERT("interval <= 7200", interval <= 7200);
-    LWESP_ASSERT("rep_cnt <= 1000", rep_cnt <= 1000);
+    LWESP_ASSERT(interval <= 7200);
+    LWESP_ASSERT(rep_cnt <= 1000);
 
     LWESP_MSG_VAR_ALLOC(msg, blocking);
     LWESP_MSG_VAR_SET_EVT(msg, evt_fn, evt_arg);
@@ -148,14 +146,14 @@ lwesp_sta_reconnect_set_config(uint16_t interval, uint16_t rep_cnt,
  * \return          \ref lwespOK on success, member of \ref lwespr_t enumeration otherwise
  */
 lwespr_t
-lwesp_sta_get_ap_info(lwesp_sta_info_ap_t* info,
-                      const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking) {
+lwesp_sta_get_ap_info(lwesp_sta_info_ap_t* info, const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg,
+                      const uint32_t blocking) {
     LWESP_MSG_VAR_DEFINE(msg);
 
     if (!lwesp_sta_is_joined()) {
         return lwespERRWIFINOTCONNECTED;
     }
-    LWESP_ASSERT("info != NULL", info != NULL);
+    LWESP_ASSERT(info != NULL);
 
     LWESP_MSG_VAR_ALLOC(msg, blocking);
     LWESP_MSG_VAR_SET_EVT(msg, evt_fn, evt_arg);
@@ -176,8 +174,8 @@ lwesp_sta_get_ap_info(lwesp_sta_info_ap_t* info,
  * \return          \ref lwespOK on success, member of \ref lwespr_t enumeration otherwise
  */
 lwespr_t
-lwesp_sta_getip(lwesp_ip_t* ip, lwesp_ip_t* gw, lwesp_ip_t* nm,
-                const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking) {
+lwesp_sta_getip(lwesp_ip_t* ip, lwesp_ip_t* gw, lwesp_ip_t* nm, const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg,
+                const uint32_t blocking) {
     LWESP_MSG_VAR_DEFINE(msg);
 
     LWESP_MSG_VAR_ALLOC(msg, blocking);
@@ -212,11 +210,11 @@ lwesp_sta_getip(lwesp_ip_t* ip, lwesp_ip_t* gw, lwesp_ip_t* nm,
  * \return          \ref lwespOK on success, member of \ref lwespr_t enumeration otherwise
  */
 lwespr_t
-lwesp_sta_setip(const lwesp_ip_t* ip, const lwesp_ip_t* gw, const lwesp_ip_t* nm,
-                const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking) {
+lwesp_sta_setip(const lwesp_ip_t* ip, const lwesp_ip_t* gw, const lwesp_ip_t* nm, const lwesp_api_cmd_evt_fn evt_fn,
+                void* const evt_arg, const uint32_t blocking) {
     LWESP_MSG_VAR_DEFINE(msg);
 
-    LWESP_ASSERT("ip != NULL", ip != NULL);
+    LWESP_ASSERT(ip != NULL);
 
     LWESP_MSG_VAR_ALLOC(msg, blocking);
     LWESP_MSG_VAR_SET_EVT(msg, evt_fn, evt_arg);
@@ -237,8 +235,7 @@ lwesp_sta_setip(const lwesp_ip_t* ip, const lwesp_ip_t* gw, const lwesp_ip_t* nm
  * \return          \ref lwespOK on success, member of \ref lwespr_t enumeration otherwise
  */
 lwespr_t
-lwesp_sta_getmac(lwesp_mac_t* mac,
-                 const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking) {
+lwesp_sta_getmac(lwesp_mac_t* mac, const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking) {
     LWESP_MSG_VAR_DEFINE(msg);
 
     LWESP_MSG_VAR_ALLOC(msg, blocking);
@@ -261,11 +258,11 @@ lwesp_sta_getmac(lwesp_mac_t* mac,
  * \return          \ref lwespOK on success, member of \ref lwespr_t enumeration otherwise
  */
 lwespr_t
-lwesp_sta_setmac(const lwesp_mac_t* mac,
-                 const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking) {
+lwesp_sta_setmac(const lwesp_mac_t* mac, const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg,
+                 const uint32_t blocking) {
     LWESP_MSG_VAR_DEFINE(msg);
 
-    LWESP_ASSERT("mac != NULL", mac != NULL);
+    LWESP_ASSERT(mac != NULL);
 
     LWESP_MSG_VAR_ALLOC(msg, blocking);
     LWESP_MSG_VAR_SET_EVT(msg, evt_fn, evt_arg);
@@ -344,7 +341,7 @@ lwespr_t
 lwesp_sta_copy_ip(lwesp_ip_t* ip, lwesp_ip_t* gw, lwesp_ip_t* nm, uint8_t* is_dhcp) {
     lwespr_t res = lwespERR;
     if ((ip != NULL || gw != NULL || nm != NULL || is_dhcp != NULL)
-        && lwesp_sta_has_ip()) {                /* Do we have a valid IP address? */
+        && lwesp_sta_has_ip()) { /* Do we have a valid IP address? */
         lwesp_core_lock();
         if (ip != NULL) {
             LWESP_MEMCPY(ip, &esp.m.sta.ip, sizeof(esp.m.sta.ip));
@@ -376,8 +373,8 @@ lwesp_sta_copy_ip(lwesp_ip_t* ip, lwesp_ip_t* gw, lwesp_ip_t* nm, uint8_t* is_dh
  * \return          \ref lwespOK on success, member of \ref lwespr_t enumeration otherwise
  */
 lwespr_t
-lwesp_sta_list_ap(const char* ssid, lwesp_ap_t* aps, size_t apsl, size_t* apf,
-                  const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking) {
+lwesp_sta_list_ap(const char* ssid, lwesp_ap_t* aps, size_t apsl, size_t* apf, const lwesp_api_cmd_evt_fn evt_fn,
+                  void* const evt_arg, const uint32_t blocking) {
     LWESP_MSG_VAR_DEFINE(msg);
 
     if (apf != NULL) {
@@ -402,7 +399,7 @@ lwesp_sta_list_ap(const char* ssid, lwesp_ap_t* aps, size_t apsl, size_t* apf,
  */
 uint8_t
 lwesp_sta_is_ap_802_11b(lwesp_ap_t* ap) {
-    return LWESP_U8((ap->bgn & 0x01) == 0x01);  /* Bit 0 is for b check */
+    return LWESP_U8((ap->bgn & 0x01) == 0x01); /* Bit 0 is for b check */
 }
 
 /**
@@ -412,7 +409,7 @@ lwesp_sta_is_ap_802_11b(lwesp_ap_t* ap) {
  */
 uint8_t
 lwesp_sta_is_ap_802_11g(lwesp_ap_t* ap) {
-    return LWESP_U8((ap->bgn & 0x02) == 0x02);  /* Bit 1 is for g check */
+    return LWESP_U8((ap->bgn & 0x02) == 0x02); /* Bit 1 is for g check */
 }
 
 /**
@@ -422,7 +419,7 @@ lwesp_sta_is_ap_802_11g(lwesp_ap_t* ap) {
  */
 uint8_t
 lwesp_sta_is_ap_802_11n(lwesp_ap_t* ap) {
-    return LWESP_U8((ap->bgn & 0x04) == 0x04);  /* Bit 2 is for n check */
+    return LWESP_U8((ap->bgn & 0x04) == 0x04); /* Bit 2 is for n check */
 }
 
 #endif /* LWESP_CFG_MODE_STATION || __DOXYGEN__ */
