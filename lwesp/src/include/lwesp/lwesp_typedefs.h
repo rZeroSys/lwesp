@@ -564,7 +564,7 @@ typedef struct lwesp_evt {
             uint32_t time;                      /*!< Time required for ping. Valid only if operation succedded */
         } ping;                                 /*!< Ping finished. Use with \ref LWESP_EVT_PING event */
 #endif /* LWESP_CFG_PING || __DOXYGEN__ */
-#if LWESP_CFG_PING || __DOXYGEN__
+#if LWESP_CFG_SNTP || __DOXYGEN__
         struct {
             lwespr_t res;                       /*!< Result of command */
             const lwesp_datetime_t* dt;         /*!< Pointer to datetime structure */
