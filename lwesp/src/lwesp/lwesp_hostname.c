@@ -33,7 +33,6 @@
  */
 #include "lwesp/lwesp_private.h"
 #include "lwesp/lwesp_hostname.h"
-#include "lwesp/lwesp_mem.h"
 
 #if LWESP_CFG_HOSTNAME || __DOXYGEN__
 
@@ -46,11 +45,11 @@
  * \return          \ref lwespOK on success, member of \ref lwespr_t enumeration otherwise
  */
 lwespr_t
-lwesp_hostname_set(const char* hostname,
-                   const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking) {
+lwesp_hostname_set(const char* hostname, const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg,
+                   const uint32_t blocking) {
     LWESP_MSG_VAR_DEFINE(msg);
 
-    LWESP_ASSERT("hostname != NULL", hostname != NULL);
+    LWESP_ASSERT(hostname != NULL);
 
     LWESP_MSG_VAR_ALLOC(msg, blocking);
     LWESP_MSG_VAR_SET_EVT(msg, evt_fn, evt_arg);
@@ -70,12 +69,12 @@ lwesp_hostname_set(const char* hostname,
  * \return          \ref lwespOK on success, member of \ref lwespr_t enumeration otherwise
  */
 lwespr_t
-lwesp_hostname_get(char* hostname, size_t size,
-                   const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking) {
+lwesp_hostname_get(char* hostname, size_t size, const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg,
+                   const uint32_t blocking) {
     LWESP_MSG_VAR_DEFINE(msg);
 
-    LWESP_ASSERT("hostname != NULL", hostname != NULL);
-    LWESP_ASSERT("size > 0", size > 0);
+    LWESP_ASSERT(hostname != NULL);
+    LWESP_ASSERT(size > 0);
 
     LWESP_MSG_VAR_ALLOC(msg, blocking);
     LWESP_MSG_VAR_SET_EVT(msg, evt_fn, evt_arg);

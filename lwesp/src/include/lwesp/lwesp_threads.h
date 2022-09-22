@@ -34,14 +34,14 @@
 #ifndef LWESP_HDR_THREADS_H
 #define LWESP_HDR_THREADS_H
 
-#include "lwesp/lwesp.h"
+#include "lwesp/lwesp_types.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-void    lwesp_thread_produce(void* const arg);
-void    lwesp_thread_process(void* const arg);
+void lwesp_thread_produce(void* const arg);
+void lwesp_thread_process(void* const arg);
 
 #ifdef __cplusplus
 }

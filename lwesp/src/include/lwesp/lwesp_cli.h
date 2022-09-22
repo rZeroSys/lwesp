@@ -32,7 +32,7 @@
 #ifndef LWESP_HDR_CLI_H
 #define LWESP_HDR_CLI_H
 
-#include "lwesp/lwesp.h"
+#include "lwesp/lwesp_types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -56,4 +56,3 @@ void lwesp_cli_register_commands(void);
 #endif /* __cplusplus */
 
 #endif /* LWESP_HDR_CLI_H */
-

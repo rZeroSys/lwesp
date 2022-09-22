@@ -34,7 +34,7 @@
 #ifndef LWESP_HDR_UNICODE_H
 #define LWESP_HDR_UNICODE_H
 
-#include "lwesp/lwesp.h"
+#include "lwesp/lwesp_types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,7 +47,7 @@ extern "C" {
  * \{
  */
 
-lwespr_t          lwespi_unicode_decode(lwesp_unicode_t* uni, uint8_t ch);
+lwespr_t lwespi_unicode_decode(lwesp_unicode_t* uni, uint8_t ch);
 
 /**
  * \}
