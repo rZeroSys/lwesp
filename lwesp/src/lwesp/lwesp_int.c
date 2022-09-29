@@ -2411,6 +2411,11 @@ lwespi_initiate_cmd(lwesp_msg_t* msg) {
             lwespi_send_number(LWESP_U32(msg->msg.tcpip_ssl_cfg.auth_mode), 0, 1);
             lwespi_send_number(LWESP_U32(msg->msg.tcpip_ssl_cfg.pki_number), 0, 1);
             lwespi_send_number(LWESP_U32(msg->msg.tcpip_ssl_cfg.ca_number), 0, 1);
+            if (msg->msg.tcpip_ssl_cfg.auth_mode != 0) {
+                //When disabling SSL auth, we must not send ca/pki numbers
+                lwespi_send_number(LWESP_U32(msg->msg.tcpip_ssl_cfg.pki_number), 0, 1);
+                lwespi_send_number(LWESP_U32(msg->msg.tcpip_ssl_cfg.ca_number), 0, 1);
+            }
             AT_PORT_SEND_END_AT();
             break;
         }
