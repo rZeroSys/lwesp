@@ -658,7 +658,7 @@ lwespi_parse_received(lwesp_recv_t* rcv) {
             is_ready = !strcmp(rcv->data, "ready" CRLF); /* Check if received string is ready */
         }
     }
-
+    
     /*
      * In case ready was received, there was a reset on device,
      * either forced by command or problem on device itself
@@ -880,6 +880,13 @@ lwespi_parse_received(lwesp_recv_t* rcv) {
                             LWESP_MEMCPY(b, &ip, sizeof(ip));         /* Copy to user variable */
                         }
                     }
+                }
+            } else if (!strncmp(rcv->data, "+SYSFLASH", 9)) {
+                if (CMD_IS_CUR(LWESP_CMD_SYSFLASH)) {
+                    /* Parse data from flash */
+                    lwespi_parse_sysflash(rcv->data, esp.msg);
+                } else if (CMD_IS_CUR(LWESP_CMD_SYSFLASH_GET)) {
+                    lwespi_parse_sysflash_get(rcv->data, esp.msg);
                 }
 #if LWESP_CFG_MODE_STATION
             } else if (CMD_IS_CUR(LWESP_CMD_WIFI_CWLAP) && !strncmp(rcv->data, "+CWLAP", 6)) {
@@ -1373,6 +1380,21 @@ lwespi_process(const void* data, size_t data_len) {
                 }
             }
 
+        } else if(esp.m.flash.read) {           /* Do we have to read incoming flash data? */
+            if (esp.m.flash.buff != NULL) {       /* Do we have active buffer? */
+                esp.m.flash.buff[esp.m.flash.buff_idx] = ch;   /* Save data character */
+            }
+            esp.m.flash.buff_idx++;
+            esp.m.flash.rem_len--;
+
+            if (esp.m.flash.rem_len == 0) {     /* Check if we read everything */
+                esp.m.flash.buff = NULL;        /* Reset buffer pointer */
+                esp.m.flash.read = 0;           /* Stop reading data */
+                esp.m.flash.buff_idx = 0;
+            }
+
+            RECV_RESET();
+
             /*
              * We are in command mode where we have to process byte by byte
              * Simply check for ASCII and unicode format and process data accordingly
@@ -1401,15 +1423,20 @@ lwespi_process(const void* data, size_t data_len) {
                     }
 
                     /* If we are waiting for "\n> " sequence when CIPSEND command is active */
-                    if (CMD_IS_CUR(LWESP_CMD_TCPIP_CIPSEND)) {
+                    if (CMD_IS_CUR(LWESP_CMD_TCPIP_CIPSEND) ||
+                         (CMD_IS_CUR(LWESP_CMD_SYSFLASH) && (esp.msg->msg.sysflash.operation == LWESP_SYSFLASH_OP_WRITE))) {
+                         
                         if (ch == '>' && ch_prev1 == '\n') {
                             RECV_RESET(); /* Reset received object */
 
-                            /* Now actually send the data prepared for TX before */
-                            AT_PORT_SEND_WITH_FLUSH(&esp.msg->msg.conn_send.data[esp.msg->msg.conn_send.ptr],
-                                                    esp.msg->msg.conn_send.sent);
-                            /* Now we are waiting for "SEND OK" or "SEND ERROR" */
-                            esp.msg->msg.conn_send.wait_send_ok_err = 1;
+                            if (CMD_IS_CUR(LWESP_CMD_TCPIP_CIPSEND)) {
+                                 /* Now actually send the data prepared before */
+                                 AT_PORT_SEND_WITH_FLUSH(&esp.msg->msg.conn_send.data[esp.msg->msg.conn_send.ptr], esp.msg->msg.conn_send.sent);
+                                 esp.msg->msg.conn_send.wait_send_ok_err = 1;/* Now we are waiting for "SEND OK" or "SEND ERROR" */
+                             } else if (CMD_IS_CUR(LWESP_CMD_SYSFLASH)) {
+                                 /* send data */
+                                 AT_PORT_SEND_WITH_FLUSH((void*)(esp.msg->msg.sysflash.pBuf), esp.msg->msg.sysflash.length);
+                             }
                         }
                     }
 
@@ -1432,7 +1459,13 @@ lwespi_process(const void* data, size_t data_len) {
                         && (tmp_ptr = strchr(tmp_ptr + 1, ',')) != NULL) { /* Search for third comma */
                         lwespi_parse_received(&recv_buff);                 /* Parse received string */
                         RECV_RESET();
+                    
+                    } else if (ch == ',' && RECV_LEN() > 10 && RECV_IDX(0) == '+' && CMD_IS_CUR(LWESP_CMD_SYSFLASH) &&
+                        (esp.msg->msg.sysflash.operation == LWESP_SYSFLASH_OP_READ) && !strncmp(recv_buff.data, "+SYSFLASH", 9)) {
+                        lwespi_parse_received(&recv_buff);  /* Parse received string */
+                        RECV_RESET();       /* Reset received buffer */
                     }
+
                 } else { /* We have sequence of unicode characters */
                     /*
                      * Unicode sequence characters are not "meta" characters
@@ -1896,6 +1929,38 @@ lwespi_initiate_cmd(lwesp_msg_t* msg) {
              */
             AT_PORT_SEND_BEGIN_AT();
             AT_PORT_SEND_CONST_STR("+CWLAPOPT=1,0x7FF");
+            AT_PORT_SEND_END_AT();
+            break;
+        }
+
+        case LWESP_CMD_SYSFLASH: {
+            AT_PORT_SEND_BEGIN_AT();
+            AT_PORT_SEND_CONST_STR("+SYSFLASH=");
+            lwespi_send_number(msg->msg.sysflash.operation, 0, 0);
+            lwespi_send_string(msg->msg.sysflash.name, 1, 1, 1);
+            if (msg->msg.sysflash.operation == LWESP_SYSFLASH_OP_ERASE) {
+                if (msg->msg.sysflash.length < 0) {
+                    /* Erase entire partition */
+                    /* offset and length is omitted */
+                } else {
+                    /* offset (4kB aligned) */
+                    lwespi_send_number(msg->msg.sysflash.offset & ~0xFFF, 0, 1);
+                    /* length (4kB aligned) */
+                    lwespi_send_number(msg->msg.sysflash.length & ~0xFFF, 0, 1);
+                }
+            } else {
+                /* offset */
+                lwespi_send_number(msg->msg.sysflash.offset, 0, 1);
+                /* length */
+                lwespi_send_number(msg->msg.sysflash.length, 0, 1);
+            }
+            AT_PORT_SEND_END_AT();
+            break;
+        }
+
+        case LWESP_CMD_SYSFLASH_GET: {
+            AT_PORT_SEND_BEGIN_AT();
+            AT_PORT_SEND_CONST_STR("+SYSFLASH?");
             AT_PORT_SEND_END_AT();
             break;
         }
