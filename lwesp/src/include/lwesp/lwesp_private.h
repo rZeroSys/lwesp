@@ -292,9 +292,10 @@ typedef struct lwesp_msg {
         } wifi_mode;                /*!< When message type \ref LWESP_CMD_WIFI_CWMODE is used */
 #if LWESP_CFG_MODE_STATION || __DOXYGEN__
         struct {
-            const char* name;       /*!< AP name */
-            const char* pass;       /*!< AP password */
+            const char* name;       /*!< AP name or MESH AP name if mesh_id != 0 */
+            const char* pass;       /*!< AP password or MESH AP password if mesh_id != 0 */
             const lwesp_mac_t* mac; /*!< Specific MAC address to use when connecting to AP */
+            const char* mesh_id;    /*!< Mesh ID. format: 00:00:00:00:00:00 */
             uint8_t error_num;      /*!< Error number on connecting */
         } sta_join;                 /*!< Message for joining to access point */
 

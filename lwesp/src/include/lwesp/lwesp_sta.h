@@ -49,6 +49,8 @@ extern "C" {
 
 lwespr_t lwesp_sta_join(const char* name, const char* pass, const lwesp_mac_t* mac, const lwesp_api_cmd_evt_fn evt_fn,
                         void* const evt_arg, const uint32_t blocking);
+lwespr_t lwesp_sta_join_mesh(const char* name, const char* pass, const char* mesh_id, const lwesp_api_cmd_evt_fn evt_fn,
+               void* const evt_arg, const uint32_t blocking);
 lwespr_t lwesp_sta_quit(const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking);
 lwespr_t lwesp_sta_autojoin(uint8_t en, const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg,
                             const uint32_t blocking);
