@@ -82,6 +82,38 @@ lwesp_sta_join(const char* name, const char* pass, const lwesp_mac_t* mac, const
     LWESP_MSG_VAR_REF(msg).msg.sta_join.name = name;
     LWESP_MSG_VAR_REF(msg).msg.sta_join.pass = pass;
     LWESP_MSG_VAR_REF(msg).msg.sta_join.mac = mac;
+    LWESP_MSG_VAR_REF(msg).msg.sta_join.mesh_id = NULL;
+
+    return lwespi_send_msg_to_producer_mbox(&LWESP_MSG_VAR_REF(msg), lwespi_initiate_cmd, 30000);
+}
+
+/**
+ * \brief           Join AP as wifi mesh
+ *
+ * Configuration changes will be saved in the NVS area of ESP device.
+ *
+ * \param[in]       name: SSID of access point to connect to
+ * \param[in]       pass: Password of access point. Use `NULL` if AP does not have password
+ * \param[in]       mesh_id: Mesh Id,  format: 00:00:00:00:00:00
+ * \param[in]       evt_fn: Callback function called when command has finished. Set to `NULL` when not used
+ * \param[in]       evt_arg: Custom argument for event callback function
+ * \param[in]       blocking: Status whether command should be blocking or not
+ * \return          \ref lwespOK on success, member of \ref lwespr_t enumeration otherwise
+ */
+lwespr_t
+lwesp_sta_join_mesh(const char* name, const char* pass, const char* mesh_id, const lwesp_api_cmd_evt_fn evt_fn,
+               void* const evt_arg, const uint32_t blocking) {
+    LWESP_MSG_VAR_DEFINE(msg);
+
+    LWESP_ASSERT(name != NULL);
+
+    LWESP_MSG_VAR_ALLOC(msg, blocking);
+    LWESP_MSG_VAR_SET_EVT(msg, evt_fn, evt_arg);
+    LWESP_MSG_VAR_REF(msg).cmd_def = LWESP_CMD_WIFI_CWJAP;
+    LWESP_MSG_VAR_REF(msg).msg.sta_join.name = name;
+    LWESP_MSG_VAR_REF(msg).msg.sta_join.pass = pass;
+    LWESP_MSG_VAR_REF(msg).msg.sta_join.mac = NULL;
+    LWESP_MSG_VAR_REF(msg).msg.sta_join.mesh_id = mesh_id;
 
     return lwespi_send_msg_to_producer_mbox(&LWESP_MSG_VAR_REF(msg), lwespi_initiate_cmd, 30000);
 }

@@ -1977,10 +1977,18 @@ lwespi_initiate_cmd(lwesp_msg_t* msg) {
 #if LWESP_CFG_MODE_STATION
         case LWESP_CMD_WIFI_CWJAP: { /* Try to join to access point */
             AT_PORT_SEND_BEGIN_AT();
-            AT_PORT_SEND_CONST_STR("+CWJAP=");
+            if (msg->msg.sta_join.mesh_id){
+                AT_PORT_SEND_CONST_STR("+CWJAPMESH=");
+            }
+            else{
+                AT_PORT_SEND_CONST_STR("+CWJAP=");
+            }
             lwespi_send_string(msg->msg.sta_join.name, 1, 1, 0);
             lwespi_send_string(msg->msg.sta_join.pass, 1, 1, 1);
-            if (msg->msg.sta_join.mac != NULL) {
+            if (msg->msg.sta_join.mesh_id) {
+                lwespi_send_string(msg->msg.sta_join.mesh_id, 1, 1, 1);
+            }
+            if (msg->msg.sta_join.mac) {
                 lwespi_send_mac(msg->msg.sta_join.mac, 1, 1);
             }
             AT_PORT_SEND_END_AT();
