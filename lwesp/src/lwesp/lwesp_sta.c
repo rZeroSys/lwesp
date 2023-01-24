@@ -86,6 +86,28 @@ lwesp_sta_join(const char* name, const char* pass, const lwesp_mac_t* mac, const
     return lwespi_send_msg_to_producer_mbox(&LWESP_MSG_VAR_REF(msg), lwespi_initiate_cmd, 30000);
 }
 
+//TODO DOX
+lwespr_t
+lwesp_sta_join_eap(const char* name, const char* pass,
+                   uint8_t mode, const char* identity, const char* username, uint8_t security_flags,
+                   const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking) {
+    LWESP_MSG_VAR_DEFINE(msg);
+
+    LWESP_ASSERT(name != NULL);
+
+    LWESP_MSG_VAR_ALLOC(msg, blocking);
+    LWESP_MSG_VAR_SET_EVT(msg, evt_fn, evt_arg);
+    LWESP_MSG_VAR_REF(msg).cmd_def = LWESP_CMD_WIFI_CWJEAP;
+    LWESP_MSG_VAR_REF(msg).msg.sta_join_eap.name = name;
+    LWESP_MSG_VAR_REF(msg).msg.sta_join_eap.pass = pass;
+    LWESP_MSG_VAR_REF(msg).msg.sta_join_eap.mode = mode;
+    LWESP_MSG_VAR_REF(msg).msg.sta_join_eap.identity = identity;
+    LWESP_MSG_VAR_REF(msg).msg.sta_join_eap.username = username;
+    LWESP_MSG_VAR_REF(msg).msg.sta_join_eap.security_flags = security_flags;
+
+    return lwespi_send_msg_to_producer_mbox(&LWESP_MSG_VAR_REF(msg), lwespi_initiate_cmd, 30000);
+}
+
 /**
  * \brief           Configure auto join to access point on startup
  * \note            For auto join feature, you need to do a join to access point with default mode.

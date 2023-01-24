@@ -54,6 +54,7 @@ lwespr_t lwespi_parse_ciprecvlen(const char* str);
 
 uint8_t lwespi_parse_cwlap(const char* str, lwesp_msg_t* msg);
 uint8_t lwespi_parse_cwjap(const char* str, lwesp_msg_t* msg);
+uint8_t lwespi_parse_cwjeap(const char* str, lwesp_msg_t* msg);
 uint8_t lwespi_parse_cwlif(const char* str, lwesp_msg_t* msg);
 uint8_t lwespi_parse_cipdomain(const char* src, lwesp_msg_t* msg);
 uint8_t lwespi_parse_cipsntptime(const char* str, lwesp_msg_t* msg);

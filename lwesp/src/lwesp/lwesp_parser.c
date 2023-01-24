@@ -458,6 +458,24 @@ lwespi_parse_cwjap(const char* str, lwesp_msg_t* msg) {
     return 1;
 }
 
+uint8_t
+lwespi_parse_cwjeap(const char* str, lwesp_msg_t* msg) {
+    if (!CMD_IS_DEF(LWESP_CMD_WIFI_CWJEAP)) {
+        return 0;
+    }
+    if (*str == '+') { /* Check input string */
+        str += 8;
+    }
+
+    /* Scan for error string */
+    if (!strncmp(str, "Timeout", 7)) {
+        msg->msg.sta_join_eap.error_num = 1;
+    }
+    //TODO parse other error strings
+
+    return 1;
+}
+
 #endif /* LWESP_CFG_MODE_STATION || __DOXYGEN__ */
 
 #if LWESP_CFG_MODE_ACCESS_POINT || __DOXYGEN__

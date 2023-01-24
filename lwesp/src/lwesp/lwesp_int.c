@@ -658,7 +658,7 @@ lwespi_parse_received(lwesp_recv_t* rcv) {
             is_ready = !strcmp(rcv->data, "ready" CRLF); /* Check if received string is ready */
         }
     }
-    
+
     /*
      * In case ready was received, there was a reset on device,
      * either forced by command or problem on device itself
@@ -894,6 +894,8 @@ lwespi_parse_received(lwesp_recv_t* rcv) {
             } else if (CMD_IS_CUR(LWESP_CMD_WIFI_CWJAP) && !strncmp(rcv->data, "+CWJAP", 6)) {
                 const char* tmp = &rcv->data[7]; /* Go to the number position */
                 esp.msg->msg.sta_join.error_num = (uint8_t)lwespi_parse_number(&tmp);
+            } else if (CMD_IS_CUR(LWESP_CMD_WIFI_CWJEAP) && !strncmp(rcv->data, "+CWJEAP", 7)) {
+                lwespi_parse_cwjeap(rcv->data, esp.msg); /* Parse CWJEAP */
             } else if (CMD_IS_CUR(LWESP_CMD_WIFI_CWJAP_GET) && !strncmp(rcv->data, "+CWJAP", 6)) {
                 lwespi_parse_cwjap(rcv->data, esp.msg); /* Parse CWJAP */
 #endif                                                  /* LWESP_CFG_MODE_STATION */
@@ -1425,7 +1427,7 @@ lwespi_process(const void* data, size_t data_len) {
                     /* If we are waiting for "\n> " sequence when CIPSEND command is active */
                     if (CMD_IS_CUR(LWESP_CMD_TCPIP_CIPSEND) ||
                          (CMD_IS_CUR(LWESP_CMD_SYSFLASH) && (esp.msg->msg.sysflash.operation == LWESP_SYSFLASH_OP_WRITE))) {
-                         
+
                         if (ch == '>' && ch_prev1 == '\n') {
                             RECV_RESET(); /* Reset received object */
 
@@ -1443,7 +1445,7 @@ lwespi_process(const void* data, size_t data_len) {
                     /*
                      * This part handles the response of "+CIPRECVDATA",
                      * that does not end with CRLF, rather string continues with user data.
-                     * 
+                     *
                      * We cannot rely on line processing.
                      *
                      * +CIPRECVDATA:<len>,<IP>,<port>,data...
@@ -1459,7 +1461,7 @@ lwespi_process(const void* data, size_t data_len) {
                         && (tmp_ptr = strchr(tmp_ptr + 1, ',')) != NULL) { /* Search for third comma */
                         lwespi_parse_received(&recv_buff);                 /* Parse received string */
                         RECV_RESET();
-                    
+
                     } else if (ch == ',' && RECV_LEN() > 10 && RECV_IDX(0) == '+' && CMD_IS_CUR(LWESP_CMD_SYSFLASH) &&
                         (esp.msg->msg.sysflash.operation == LWESP_SYSFLASH_OP_READ) && !strncmp(recv_buff.data, "+SYSFLASH", 9)) {
                         lwespi_parse_received(&recv_buff);  /* Parse received string */
@@ -1983,6 +1985,22 @@ lwespi_initiate_cmd(lwesp_msg_t* msg) {
             if (msg->msg.sta_join.mac != NULL) {
                 lwespi_send_mac(msg->msg.sta_join.mac, 1, 1);
             }
+            AT_PORT_SEND_END_AT();
+            break;
+        }
+        case LWESP_CMD_WIFI_CWJEAP: { /* Try to join to enterprise access point */
+            AT_PORT_SEND_BEGIN_AT();
+            AT_PORT_SEND_CONST_STR("+CWJEAP=");
+            lwespi_send_string(msg->msg.sta_join_eap.name, 1, 1, 0);
+            lwespi_send_number(msg->msg.sta_join_eap.mode, 0, 1);
+            lwespi_send_string(msg->msg.sta_join_eap.identity, 1, 1, 1);
+            lwespi_send_string(msg->msg.sta_join_eap.username, 1, 1, 1);
+            lwespi_send_string(msg->msg.sta_join_eap.pass, 1, 1, 1);
+            lwespi_send_number(msg->msg.sta_join_eap.security_flags, 0, 1);
+
+  /*           if (msg->msg.sta_join.mac != NULL) {
+                lwespi_send_mac(msg->msg.sta_join.mac, 1, 1);
+            } */
             AT_PORT_SEND_END_AT();
             break;
         }

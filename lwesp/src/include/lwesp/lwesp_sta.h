@@ -49,6 +49,9 @@ extern "C" {
 
 lwespr_t lwesp_sta_join(const char* name, const char* pass, const lwesp_mac_t* mac, const lwesp_api_cmd_evt_fn evt_fn,
                         void* const evt_arg, const uint32_t blocking);
+lwespr_t lwesp_sta_join_eap(const char* name, const char* pass,
+                            uint8_t mode, const char* identity, const char* username, uint8_t security_flags,
+                            const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking);
 lwespr_t lwesp_sta_quit(const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg, const uint32_t blocking);
 lwespr_t lwesp_sta_autojoin(uint8_t en, const lwesp_api_cmd_evt_fn evt_fn, void* const evt_arg,
                             const uint32_t blocking);

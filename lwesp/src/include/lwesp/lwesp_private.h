@@ -89,6 +89,7 @@ typedef enum {
 #endif                   /* LWESP_CFG_IPV6 || __DOXYGEN__ */
 #if LWESP_CFG_MODE_STATION || __DOXYGEN__
     LWESP_CMD_WIFI_CWJAP,         /*!< Connect to access point */
+    LWESP_CMD_WIFI_CWJEAP,        /*!< Connect to enterprise access point */
     LWESP_CMD_WIFI_CWRECONNCFG,   /*!< Setup reconnect interval and maximum tries */
     LWESP_CMD_WIFI_CWJAP_GET,     /*!< Info of the connected access point */
     LWESP_CMD_WIFI_CWQAP,         /*!< Disconnect from access point */
@@ -297,6 +298,18 @@ typedef struct lwesp_msg {
             const lwesp_mac_t* mac; /*!< Specific MAC address to use when connecting to AP */
             uint8_t error_num;      /*!< Error number on connecting */
         } sta_join;                 /*!< Message for joining to access point */
+
+        struct {
+            const char* name;       /*!< AP name */
+            const char* pass;       /*!< password for phase 2 */
+            uint8_t mode;           /*!< WPA2 Enterprise authentication method. */
+            const char* identity;   /*!<  identity for phase 1 */
+            const char* username;   /*!<  username for phase 2 */
+            uint8_t security_flags; /*!< security flags */
+
+            uint8_t error_num;      /*!< Error number on connecting */
+        } sta_join_eap;                 /*!< Message for joining to enterprise access point */
+
 
         struct {
             uint16_t interval; /*!< Interval in units of seconds */
