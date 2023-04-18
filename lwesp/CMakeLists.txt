@@ -30,7 +30,7 @@ set(lwesp_core_SRCS
     ${CMAKE_CURRENT_LIST_DIR}/src/lwesp/lwesp_unicode.c
     ${CMAKE_CURRENT_LIST_DIR}/src/lwesp/lwesp_wps.c
     )
-    
+
 # API sources
 set(lwesp_api_SRCS
     ${CMAKE_CURRENT_LIST_DIR}/src/api/lwesp_netconn.c
@@ -46,8 +46,6 @@ set(lwesp_httpsrv_SRCS
 set(lwesp_mqtt_SRCS
     ${CMAKE_CURRENT_LIST_DIR}/src/apps/mqtt/lwesp_mqtt_client.c
     ${CMAKE_CURRENT_LIST_DIR}/src/apps/mqtt/lwesp_mqtt_client_api.c
-    ${CMAKE_CURRENT_LIST_DIR}/src/apps/cayenne/lwesp_cayenne.c
-    ${CMAKE_CURRENT_LIST_DIR}/src/apps/cayenne/lwesp_cayenne_evt.c
     )
 
 # CLI
@@ -81,7 +79,7 @@ target_include_directories(lwesp_api INTERFACE ${lwesp_include_DIRS})
 
 # Register apps to the system
 add_library(lwesp_apps INTERFACE)
-target_sources(lwesp_apps PUBLIC ${lwesp_allapps_SRCS})
+target_sources(lwesp_apps PUBLIC ${lwesp_mqtt_SRCS})
 target_include_directories(lwesp_apps INTERFACE ${lwesp_include_DIRS})
 
 # Debug message
